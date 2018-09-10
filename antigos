@@ -1,0 +1,37 @@
+import json
+
+class LolaOrganizer():
+    def string_check(checker):
+        if checker !=  None:
+            checker = checker.strip()
+            return "\n" + checker
+        return ''
+
+    def create_tweet_blocks(checker, support):
+        if len(checker) > 280:
+            support.append(checker[:275] + "(...)")
+            return create_tweet_blocks(checker[275:], support)
+        support.append(checker)
+        return support
+
+    def main():
+        lola = json.loads(open('20180909LoLA.json').read())
+        champion = str(input("Digite o nome de um campeao: "))
+        for item in lola:
+            texts = ''
+            link = ''
+            if item['Nome'] == champion:
+                texts += string_check(item['Patch'])
+                texts += string_check(item['Sumario'])
+                texts += string_check(item['Texto'])
+                for skill in item['Skills']:
+                    texts += string_check(skill)
+                link += string_check(item['Link'])
+                tweet_block = []
+                tweets = create_tweet_blocks(texts, tweet_block)
+                tweets.append('Fonte: ' + link)
+                for i in tweets:
+                    print(i)
+
+    if __name__ == "__main__":
+        main()
